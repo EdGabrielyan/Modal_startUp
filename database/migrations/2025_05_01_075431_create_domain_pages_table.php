@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('domain_pages', function (Blueprint $table) {
             $table->id();
-            $table->string('domain');
             $table->string('page');
-            $table->text('script')->nullable();
             $table->text('title')->nullable();
             $table->text('description')->nullable();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-
+            $table->foreignId('domains_id')->constrained('domains')->onDelete('cascade');
             $table->timestamps();
         });
     }

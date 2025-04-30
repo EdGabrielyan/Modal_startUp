@@ -23,10 +23,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/create', [AdminController::class, 'create'])->name('create');
     Route::get('/{id}', [AdminController::class, 'show'])->name('show');
     Route::post('/', [AdminController::class, 'store'])->name('store');
-    Route::put('/{domainPage}', [AdminController::class, 'update'])->name('update');
-    Route::delete('/{domainPage}', [AdminController::class, 'destroy'])->name('destroy');
+    Route::put('/admin/{id}', [AdminController::class, 'update'])->name('update');
+    Route::get('/admin/{id}/edit', [AdminController::class, 'edit'])->name('edit');
+    Route::delete('/{domains}', [AdminController::class, 'destroy'])->name('destroy');
+
 });
 
 
