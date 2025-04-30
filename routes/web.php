@@ -43,7 +43,9 @@ const key = "{$key}";
 (async function () {
     if (!key) return;
 
-    const response = await fetch("http://127.0.0.1:8000/api/widget?script=" + key);
+    const currentPage = window.location.pathname;
+
+    const response = await fetch("http://127.0.0.1:80/api/widget?script=" + key + "&page=" + encodeURIComponent(currentPage));
     const data = await response.json();
 
     if (data.error) return;
@@ -57,13 +59,13 @@ const key = "{$key}";
     <button onclick="this.parentElement.remove()">Закрыть</button>
 </div>`;
         document.body.appendChild(modal);
-    },  3000);
+    },  data.delay || 3000);
 })();
 JAVASCRIPT;
     return response($js, 200)
         ->header('Content-Type', 'application/javascript')
-        ->header('Access-Control-Allow-Origin', '*')  // Разрешаем доступ с любого домена
-        ->header('Cross-Origin-Resource-Policy', 'cross-origin'); // Разрешаем кросс-доменные ресурсы
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Cross-Origin-Resource-Policy', 'cross-origin');
 });
 
 

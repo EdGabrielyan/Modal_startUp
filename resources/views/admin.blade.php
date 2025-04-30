@@ -24,7 +24,7 @@
                     <tr class="border-t">
                         <td class="p-3 text-white bg-gray-800">{{ $dp->domain }}</td>
                         <td class="p-3 text-white bg-gray-700">
-                            {!! htmlentities('<script src="http://127.0.0.1:8000/widget.js?script='.$dp->script.'"></script>') !!}
+                            {!! htmlentities('<script src="http://127.0.0.1:80/widget.js?script='.$dp->script.'"></script>') !!}
                         </td>
                         <td class="p-3 flex gap-2 justify-end">
                             <!-- Update Form -->
