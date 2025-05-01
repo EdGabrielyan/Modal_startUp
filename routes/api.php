@@ -3,6 +3,7 @@
 use App\Models\Domains;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/widget', function (Request $request) {
     try {

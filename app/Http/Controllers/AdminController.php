@@ -13,16 +13,21 @@ class AdminController extends Controller
         $domainPages = Domains::with('domainPages')->where('user_id', $id)->get();
         return view('admin', compact('domainPages'));
     }
+
     public function create()
     {
         return view('create');
     }
 
+
+
     public function store(Request $request)
     {
         $domainData = $request->only('domain');
         $domainData['user_id'] = auth()->id();
-        $domainData['script'] = Str::random();
+
+
+        $domainData['script'] = $this->randomString(32);
         $domain = Domains::create($domainData);
 
         $pages = $request->input('page');
@@ -46,6 +51,11 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.show', auth()->id());
+    }
+    private function randomString($length = 32): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:<>,.?/';
+        return substr(str_shuffle(str_repeat($characters, ceil($length / strlen($characters)))), 0, $length);
     }
 
     public function edit($id)
@@ -71,7 +81,7 @@ class AdminController extends Controller
             $domain->domainPages()->whereIn('id', $toDelete)->delete();
         }
 
-        if(!empty($request->page)){
+        if (!empty($request->page)) {
             foreach ($request->page as $index => $page) {
                 $title = $request->title[$index] ?? '';
                 $description = $request->description[$index] ?? '';
