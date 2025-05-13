@@ -84,6 +84,10 @@ Route::get('/send-test-message', function () {
     return $response->json();
 });
 
+//Http::post("https://api.telegram.org/bot" . config('services.telegram.bot_token') . "/sendMessage", [
+//    'chat_id' => $chatId,
+//    'text' => 'Спасибо, вы подключены!',
+//]);
 
 
 

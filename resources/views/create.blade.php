@@ -29,17 +29,14 @@
         document.getElementById('addFieldsButton').addEventListener('click', function () {
             const form = document.getElementById('adminForm');
 
-            // Контейнер для одной секции
             const wrapper = document.createElement('div');
             wrapper.classList.add('space-y-3', 'mt-4', 'p-4', 'border', 'rounded', 'bg-gray-50');
 
-            // Заголовок секции
             const sectionTitle = document.createElement('h3');
             sectionTitle.textContent = `Modal Page ${pageCounter}`;
             sectionTitle.classList.add('font-bold', 'text-lg', 'mb-2');
             wrapper.appendChild(sectionTitle);
 
-            // Поля Page, Title, Description
             ['page', 'title', 'description'].forEach(field => {
                 const input = document.createElement('input');
                 input.name = `${field}[]`;
@@ -47,9 +44,8 @@
                 input.required = true;
                 input.classList.add('border', 'p-2', 'rounded', 'w-full');
                 wrapper.appendChild(input);
-            });
+            })
 
-            // Контейнер для чекбоксов
             const methods = ['whatsapp', 'telegram', 'telephone', 'viber'];
             methods.forEach(method => {
                 const checkboxContainer = document.createElement('div');
@@ -87,7 +83,6 @@
                 wrapper.appendChild(checkboxContainer);
             });
 
-            // Вставить перед кнопкой добавления
             form.insertBefore(wrapper, document.getElementById('addFieldsButton'));
 
             pageCounter++;

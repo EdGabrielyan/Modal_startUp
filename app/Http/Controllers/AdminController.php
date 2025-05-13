@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Domains;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-
 class AdminController extends Controller
 {
     public function show(int $id)
@@ -18,8 +16,6 @@ class AdminController extends Controller
     {
         return view('create');
     }
-
-
 
     public function store(Request $request)
     {
@@ -72,10 +68,9 @@ class AdminController extends Controller
             'domain' => $request->domain,
         ]);
 
-        $pageIds = $request->page_id ?? []; // Список пришедших ID страниц
-        $existingIds = $domain->domainPages()->pluck('id')->toArray(); // Список текущих ID в базе
+        $pageIds = $request->page_id ?? [];
+        $existingIds = $domain->domainPages()->pluck('id')->toArray();
 
-        // Удалим те, которых больше нет
         $toDelete = array_diff($existingIds, $pageIds);
         if (!empty($toDelete)) {
             $domain->domainPages()->whereIn('id', $toDelete)->delete();
@@ -88,14 +83,12 @@ class AdminController extends Controller
                 $pageId = $request->page_id[$index] ?? null;
 
                 if ($pageId && in_array($pageId, $existingIds)) {
-                    // Обновляем существующую
                     $domain->domainPages()->where('id', $pageId)->update([
                         'page' => $page,
                         'title' => $title,
                         'description' => $description,
                     ]);
                 } else {
-                    // Создаём новую
                     $domain->domainPages()->create([
                         'page' => $page,
                         'title' => $title,
