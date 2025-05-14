@@ -86,19 +86,23 @@
         // Показать/скрыть input при клике на checkbox (email / telegram)
         ['telegram', 'email'].forEach(method => {
             const checkbox = document.getElementById(`contact_${method}`);
-            const input = document.getElementById(`input_${method}`);
+            const input = method === 'email' ? document.getElementById(`input_${method}`) : null;
             const telegramInstructions = document.getElementById(`telegram_instructions`);
 
             checkbox.addEventListener('change', function () {
                 if (this.checked) {
-                    input.classList.remove('hidden');
+                    if (method === 'email' && input) {
+                        input.classList.remove('hidden');
+                    }
 
                     if (method === 'telegram' && telegramInstructions) {
                         telegramInstructions.classList.remove('hidden');
                     }
                 } else {
-                    input.classList.add('hidden');
-                    input.value = '';
+                    if (method === 'email' && input) {
+                        input.classList.add('hidden');
+                        input.value = '';
+                    }
 
                     if (method === 'telegram' && telegramInstructions) {
                         telegramInstructions.classList.add('hidden');
