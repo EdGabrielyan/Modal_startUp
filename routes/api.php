@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\TelegramController;
 use App\Models\Domains;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -39,6 +38,4 @@ Route::get('/widget', function (Request $request) {
         ]);
     }
 });
-// routes/api.php
-Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
 
