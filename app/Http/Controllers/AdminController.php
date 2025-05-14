@@ -3,7 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Domains;
+use App\Models\TelegramUser;
+use App\Notifications\DomainCreated;
+use App\Notifications\DomainCreatedTelegram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+
 class AdminController extends Controller
 {
     public function show(int $id)
@@ -21,33 +28,68 @@ class AdminController extends Controller
     {
         $domainData = $request->only('domain');
         $domainData['user_id'] = auth()->id();
-
-
         $domainData['script'] = $this->randomString(32);
+
+        // Создаем домен
         $domain = Domains::create($domainData);
 
+        // Получаем страницы и сохраняем
         $pages = $request->input('page');
         $titles = $request->input('title');
         $descriptions = $request->input('description');
 
+        $lastPageModel = null;
+
         if (is_array($pages)) {
             foreach ($pages as $index => $page) {
-                $domain->domainPages()->create([
+                $lastPageModel = $domain->domainPages()->create([
                     'page' => $page,
                     'title' => $titles[$index] ?? null,
                     'description' => $descriptions[$index] ?? null,
                 ]);
             }
         } else {
-            $domain->domainPages()->create([
+            $lastPageModel = $domain->domainPages()->create([
                 'page' => $pages,
                 'title' => $titles,
                 'description' => $descriptions,
             ]);
         }
 
+        // Получаем chat_id пользователя для отправки уведомления в Telegram
+        $telegramUser = TelegramUser::where('user_id', auth()->id())->first();
+        $chatId = $telegramUser ? $telegramUser->chat_id : null;
+
+        // Отправляем уведомление
+        $contacts = $request->input('contacts', []);
+        $email = $request->input('email_value');
+        $telegram = $request->input('telegram_value');
+
+        if (in_array('email', $contacts) && $email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Notification::route('mail', $email)->notify(new DomainCreated($domain, $lastPageModel));
+        }
+
+        if (in_array('telegram', $contacts) && $telegram && $chatId) {
+            $message = "Ваш домен создан: {$domain->domain}";
+            $this->sendTelegramMessage($chatId, $message); // Отправляем сообщение в Telegram
+        }
+
         return redirect()->route('admin.show', auth()->id());
     }
+
+// Функция для отправки сообщений в Telegram
+    private function sendTelegramMessage($chatId, $message)
+    {
+        $token = config('services.telegram.bot_token');
+        Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message,
+        ]);
+    }
+
+
+
+
     private function randomString($length = 32): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:<>,.?/';

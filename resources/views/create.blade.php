@@ -16,6 +16,38 @@
                 Add Modal page
             </button>
 
+            <!-- Контактные поля -->
+            <div class="space-y-3 mt-4 p-4 border rounded bg-gray-50">
+                <h3 class="font-bold text-lg mb-2">Contact Methods</h3>
+
+                @foreach (['telegram', 'email'] as $method)
+                    <div class="flex flex-col space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="contacts[]" value="{{ $method }}" id="contact_{{ $method }}">
+                            <label for="contact_{{ $method }}">{{ ucfirst($method) }}</label>
+                        </div>
+                        <input
+                            type="text"
+                            name="{{ $method }}_value"
+                            placeholder="Enter {{ $method }}..."
+                            class="hidden border p-2 rounded w-full"
+                            id="input_{{ $method }}"
+                        >
+
+                        {{-- Добавим ссылку для Telegram --}}
+                        @if ($method === 'telegram')
+                            <div id="telegram_instructions" class="hidden">
+                                <a href="https://t.me/fravr_notify_bot" target="_blank"
+                                   class="text-blue-600 underline">
+                                    Click here to open our Telegram bot
+                                </a>
+                                <p class="text-sm text-gray-500">Then click "Start" to link your Telegram</p>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
             <!-- Submit -->
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full">
                 Create
@@ -44,48 +76,35 @@
                 input.required = true;
                 input.classList.add('border', 'p-2', 'rounded', 'w-full');
                 wrapper.appendChild(input);
-            })
-
-            const methods = ['whatsapp', 'telegram', 'telephone', 'viber'];
-            methods.forEach(method => {
-                const checkboxContainer = document.createElement('div');
-                checkboxContainer.classList.add('flex', 'items-center', 'space-x-2');
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.name = `contacts[${pageCounter}][]`;
-                checkbox.value = method;
-                checkbox.id = `${method}_${pageCounter}`;
-
-                const label = document.createElement('label');
-                label.htmlFor = checkbox.id;
-                label.textContent = method.charAt(0).toUpperCase() + method.slice(1);
-
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = `${method}_value[${pageCounter}]`;
-                input.placeholder = `Enter ${method}...`;
-                input.classList.add('hidden', 'border', 'p-2', 'rounded', 'w-full');
-
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.checked) {
-                        input.classList.remove('hidden');
-                    } else {
-                        input.classList.add('hidden');
-                        input.value = '';
-                    }
-                });
-
-                checkboxContainer.appendChild(checkbox);
-                checkboxContainer.appendChild(label);
-                checkboxContainer.appendChild(input);
-
-                wrapper.appendChild(checkboxContainer);
             });
 
             form.insertBefore(wrapper, document.getElementById('addFieldsButton'));
 
             pageCounter++;
+        });
+
+        // Показать/скрыть input при клике на checkbox (email / telegram)
+        ['telegram', 'email'].forEach(method => {
+            const checkbox = document.getElementById(`contact_${method}`);
+            const input = document.getElementById(`input_${method}`);
+            const telegramInstructions = document.getElementById(`telegram_instructions`);
+
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    input.classList.remove('hidden');
+
+                    if (method === 'telegram' && telegramInstructions) {
+                        telegramInstructions.classList.remove('hidden');
+                    }
+                } else {
+                    input.classList.add('hidden');
+                    input.value = '';
+
+                    if (method === 'telegram' && telegramInstructions) {
+                        telegramInstructions.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
 </x-app-layout>

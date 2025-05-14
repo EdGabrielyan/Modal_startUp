@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -84,10 +85,8 @@ Route::get('/send-test-message', function () {
     return $response->json();
 });
 
-//Http::post("https://api.telegram.org/bot" . config('services.telegram.bot_token') . "/sendMessage", [
-//    'chat_id' => $chatId,
-//    'text' => 'Спасибо, вы подключены!',
-//]);
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook'])->name('telegram.webhook');
+Route::get('/telegram/set-webhook', [TelegramController::class, 'setWebhook']);
 
 
 
