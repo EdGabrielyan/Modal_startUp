@@ -37,7 +37,7 @@
                         {{-- Добавим ссылку для Telegram --}}
                         @if ($method === 'telegram')
                             <div id="telegram_instructions" class="hidden">
-                                <a href="https://t.me/fravr_notify_bot" target="_blank"
+                                <a href="https://t.me/pentiumlaravelbot" target="_blank"
                                    class="text-blue-600 underline">
                                     Click here to open our Telegram bot
                                 </a>

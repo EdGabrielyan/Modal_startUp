@@ -6,6 +6,7 @@ use App\Models\Domains;
 use App\Notifications\DomainCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Telegram\Bot\Api;
 
 class AdminController extends Controller
 {
@@ -61,6 +62,16 @@ class AdminController extends Controller
             Notification::route('mail', $email)->notify(new DomainCreated($domain, $lastPageModel));
         }
 
+        $telegram = new Api(config('services.telegram.bot_token'));
+
+
+        $chatId = '712522927';
+        $message = 'Hello from Laravel Telegram bot! 🚀';
+
+        $telegram->sendMessage([
+            'chat_id' => $chatId,
+            'text' => $message,
+        ]);
 
         return redirect()->route('admin.show', auth()->id());
     }
